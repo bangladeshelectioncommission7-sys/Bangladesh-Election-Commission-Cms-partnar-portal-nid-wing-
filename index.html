@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EC OTP Login Portal</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f6f9;color:#222}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .card{width:100%;max-width:420px;background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);padding:24px}
+    h2{margin:0 0 8px;text-align:center;color:#0b5ed7}
+    p{margin:0 0 18px;text-align:center;color:#666}
+    input,button{width:100%;padding:12px 14px;border-radius:10px;font-size:16px}
+    input{border:1px solid #cfd6dd;margin-bottom:12px}
+    button{border:none;background:#0b5ed7;color:#fff;font-weight:700;cursor:pointer;margin-bottom:10px}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .muted{background:#28a745}
+    #msg{min-height:24px;text-align:center;font-weight:700;margin-top:8px}
+    .error{color:#c62828}
+    .success{color:#1b5e20}
+    .small{font-size:13px;color:#777;line-height:1.5}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h2>OTP লগইন</h2>
+      <p>বাংলাদেশ নির্বাচন কমিশন স্টাইল ডেমো</p>
+
+      <input id="phone" type="tel" maxlength="11" placeholder="রেজিস্টারকৃত মোবাইল নাম্বার" />
+      <button id="sendBtn" class="muted" onclick="sendOtp()">OTP পাঠান</button>
+
+      <input id="otp" type="text" maxlength="6" placeholder="OTP লিখুন" />
+      <button onclick="verifyOtp()">সাবমিট</button>
+
+      <div id="msg"></div>
+      <div class="small">নোট: এটি ডেমো পোর্টাল। OTP server-side generate হয়ে SMS API দিয়ে পাঠানো হয়।</div>
+    </div>
+  </div>
+
+  <script>
+    let currentOtp = "";
+    let otpPhone = "";
+    let expiresAt = 0;
+
+    function setMsg(text, type){
+      const msg = document.getElementById("msg");
+      msg.textContent = text;
+      msg.className = type || "";
+    }
+
+    async function sendOtp(){
+      const phone = document.getElementById("phone").value.trim();
+      const sendBtn = document.getElementById("sendBtn");
+
+      if(!/^01\d{9}$/.test(phone)){
+        setMsg("সঠিক মোবাইল নাম্বার দিন", "error");
+        return;
+      }
+
+      sendBtn.disabled = true;
+      setMsg("OTP পাঠানো হচ্ছে...", "success");
+
+      try{
+        const res = await fetch("/api/send-otp", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ phone })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if(!res.ok || !data.success){
+          throw new Error(data.message || "OTP পাঠানো যায়নি");
+        }
+
+        currentOtp = data.otp || "";
+        otpPhone = phone;
+        expiresAt = Date.now() + 5 * 60 * 1000;
+
+        setMsg(data.message || "OTP পাঠানো হয়েছে", "success");
+      }catch(err){
+        setMsg("OTP পাঠানো যায়নি: " + (err.message || "Unknown error"), "error");
+      }finally{
+        setTimeout(()=>{ sendBtn.disabled = false; }, 3000);
+      }
+    }
+
+    function verifyOtp(){
+      const phone = document.getElementById("phone").value.trim();
+      const otp = document.getElementById("otp").value.trim();
+
+      if(!currentOtp){
+        setMsg("আগে OTP পাঠান", "error");
+        return;
+      }
+
+      if(Date.now() > expiresAt){
+        setMsg("OTP এর সময়সীমা শেষ হয়েছে। আবার OTP পাঠান।", "error");
+        return;
+      }
+
+      if(phone !== otpPhone){
+        setMsg("যে নাম্বারে OTP পাঠানো হয়েছে সেই একই নাম্বার দিন।", "error");
+        return;
+      }
+
+      if(otp === currentOtp){
+        setMsg("লগইন সফল", "success");
+      }else{
+        setMsg("ভুল OTP", "error");
+      }
+    }
+  </script>
+</body>
+</html>
