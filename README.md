@@ -1,33 +1,16 @@
-# EC OTP Vercel Project
+# OTP Vercel Project
 
-## Files
-- index.html
-- api/send-otp.js
-- vercel.json
-- .env.example
-- package.json
+## Deploy on Vercel
 
-## Environment Variables
-Set these in Vercel Project Settings -> Environment Variables
+1. Upload all files to GitHub.
+2. Import the repo into Vercel.
+3. In Vercel Project Settings -> Environment Variables, add:
+   - `SMS_API_URL`
+   - `OTP_SENDER_ID` (optional)
+4. Redeploy.
 
-- SMS_API_URL
-- SMS_API_KEY
-- SMS_FROM
-- SMS_UNICODE
-- SMS_ACTION
-- OTP_MESSAGE_TEMPLATE
+## Notes
 
-## Example
-SMS_API_URL=https://sms.one9.one/sms/api
-SMS_API_KEY=YOUR_API_KEY
-SMS_FROM=sms
-SMS_UNICODE=1
-SMS_ACTION=send-sms
-OTP_MESSAGE_TEMPLATE=বাংলাদেশ নির্বাচন কমিশন (NID সেবা): আপনার OTP কোড {{OTP}}। এটি ৫ মিনিটের জন্য প্রযোজ্য। কারো সাথে শেয়ার করবেন না।
-
-## Health Check
-Open:
-https://your-domain.vercel.app/api/send-otp
-
-If working, it returns:
-OTP API is running
+- This project stores OTP temporarily in server memory for demo use.
+- On serverless cold starts or multiple instances, stored OTP may reset.
+- For production, use Redis / database for OTP storage.

@@ -1,9 +1,5 @@
 {
-  "name": "ec-otp-vercel-project",
-  "private": true,
+  "name": "otp-vercel-project",
   "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vercel dev"
-  }
+  "type": "module"
 }
