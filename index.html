@@ -265,12 +265,10 @@
         let otpMobile = "";
         let otpExpiresAt = 0;
 
-        // লোডিং দেখানোর ফাংশন
         function showLoading() {
             document.getElementById("loadingOverlay").style.display = "flex";
         }
 
-        // লোডিং লুকানোর ফাংশন
         function hideLoading() {
             document.getElementById("loadingOverlay").style.display = "none";
         }
@@ -342,7 +340,6 @@
         const COOLDOWN_TIME = 30000;
 
         async function sendOtpByApi(mobile, otp) {
-            // এখানে আসল API কল হবে (আপনার সার্ভার অনুযায়ী)
             const response = await fetch("/api/send-otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -394,11 +391,15 @@
             }
         });
 
+        // ==================== OTP সাবমিট অংশ (সমাধান করা হয়েছে) ====================
         document.getElementById("otpForm").addEventListener("submit", e => {
             e.preventDefault();
+            
             const enteredOtp = document.getElementById("otp").value.trim();
             const mobile = document.getElementById("mobileNumber").value.trim();
             const otpMsg = document.getElementById("otpMessage");
+
+            otpMsg.innerHTML = "";
 
             if (!generatedOtp || !otpMobile) {
                 otpMsg.innerHTML = `<span class="error">প্রথমে OTP পাঠান</span>`;
@@ -410,24 +411,21 @@
                 return;
             }
 
-            if (mobile !== otpMobile) {
-                otpMsg.innerHTML = `<span class="error">মোবাইল নাম্বার মিলছে না</span>`;
-                return;
-            }
-
             if (enteredOtp === generatedOtp) {
-                generatedOtp = "";
-                otpMobile = "";
-                otpExpiresAt = 0;
-                otpMsg.innerHTML = `<span class="success">OTP যাচাই সফল হয়েছে।</span>`;
+                // সফল
+                otpMsg.innerHTML = `<span class="success">OTP যাচাই সফল হয়েছে। ড্যাশবোর্ডে যাচ্ছি...</span>`;
 
                 showLoading();
 
                 setTimeout(() => {
                     hideLoading();
+                    generatedOtp = "";
+                    otpMobile = "";
+                    otpExpiresAt = 0;
+
                     document.getElementById("otpContainer").style.display = "none";
                     document.getElementById("dashboard").style.display = "block";
-                }, 1200);
+                }, 1500);
             } else {
                 otpMsg.innerHTML = `<span class="error">OTP ভুল হয়েছে। আবার চেষ্টা করুন।</span>`;
             }
