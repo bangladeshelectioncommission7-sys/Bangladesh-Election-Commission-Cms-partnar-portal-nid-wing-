@@ -35,7 +35,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading-text { margin-top: 15px; color: white; font-size: 18px; }
 
-        #accessMessage { color: red; font-weight: bold; margin-top: 20px; text-align: center; }
+        #accessMessage { color: green; font-weight: bold; margin-top: 20px; text-align: center; }
         .back-btn { margin-bottom: 15px; width: auto; }
         .result-box { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
         .pdf-card { margin-top: 15px; padding: 14px; border: 1px solid #cfd8dc; border-radius: 8px; background: #fff; }
@@ -328,8 +328,7 @@
         function attemptDownload() {
             document.getElementById("accessMessage").innerHTML = `
                 <div style="color: red; font-weight: bold; padding: 15px; border: 1px solid #f5c6cb; background: #f8d7da; border-radius: 8px;">
-                    আপনার পোর্টাল স্যাশন-২ এক্সেস তাই প্রথম রিচার্জ ৪৮০ টাকা বাধ্যতামূলক। 
-                    আপনার রেজিস্ট্রার অফিসারের সাথে যোগাযোগ করে রিচার্জ সম্পূর্ণ করে পোর্টাল সচল করুন। 
+                    আপনার পোর্টাল স্যাশন-২ এক্সেস প্রথম রিচার্জ ৪৮০ টাকা ট্রানজেকশন আইডি: DCS2K06N8A সফল হয়েছে, অনুগ্রহ করে আগামী ১২০ মিনিট পর পোর্টালে পুনরায় প্রবেশ করে কার্যক্রম চালিয়ে যেতে পারবেন। 
                     ধন্যবাদ, (বাংলাদেশ নির্বাচন কমিশন সচিবালয়)।
                 </div>
             `;
